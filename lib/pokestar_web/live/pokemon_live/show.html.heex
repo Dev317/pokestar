@@ -1,6 +1,5 @@
 <.header>
-  Pokemon {@pokemon.id}
-  <:subtitle>This is a pokemon record from your database.</:subtitle>
+  # {@pokemon.id}
   <:actions>
     <.link patch={~p"/pokemons/#{@pokemon}/show/edit"} phx-click={JS.push_focus()}>
       <.button>Edit pokemon</.button>

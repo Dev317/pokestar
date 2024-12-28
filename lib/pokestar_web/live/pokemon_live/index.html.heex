@@ -1,8 +1,8 @@
 <.header>
-  Listing Pokemons
+  Pokemons
   <:actions>
     <.link patch={~p"/pokemons/new"}>
-      <.button>New Pokemon</.button>
+      <.button>Add pokemon</.button>
     </.link>
   </:actions>
 </.header>
@@ -12,6 +12,12 @@
   rows={@streams.pokemons}
   row_click={fn {_id, pokemon} -> JS.navigate(~p"/pokemons/#{pokemon}") end}
 >
+  <:col :let={{_id, pokemon}} label="">
+    <img src={~p"/images/pokemon/#{pokemon.name <> ".png"}"}
+        alt={pokemon.name}
+        width="50"
+        height="50"/>
+  </:col>
   <:col :let={{_id, pokemon}} label="Name">{pokemon.name}</:col>
   <:col :let={{_id, pokemon}} label="Type 1">{pokemon.type_1}</:col>
   <:col :let={{_id, pokemon}} label="Type 2">{pokemon.type_2}</:col>

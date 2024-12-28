@@ -2,8 +2,6 @@ import Config
 
 # Configure your database
 config :pokestar, Pokestar.Repo,
-  username: "postgres",
-  password: "postgres",
   hostname: "localhost",
   database: "pokestar_dev",
   stacktrace: true,

@@ -2,6 +2,7 @@ defmodule PokestarWeb.PokemonLive.FormComponent do
   use PokestarWeb, :live_component
 
   alias Pokestar.Battle
+  alias Pokestar.Enums.Battle.PokemonSchema
 
   @impl true
   def render(assigns) do
@@ -20,8 +21,20 @@ defmodule PokestarWeb.PokemonLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:name]} type="text" label="Name" />
-        <.input field={@form[:type_1]} type="text" label="Type 1" />
-        <.input field={@form[:type_2]} type="text" label="Type 2" />
+        <.input field={@form[:type_1]}
+          type="select"
+          label="Type 1"
+          options={Enum.map(PokemonSchema.pokemon_type_enum(), fn type -> {Atom.to_string(type), type} end)} 
+        />
+        <.input field={@form[:type_2]} 
+          type="select" 
+          label="Type 2" 
+          options={
+            [
+              {"--", nil} | Enum.map(PokemonSchema.pokemon_type_enum(), fn type -> {Atom.to_string(type), type} end)
+            ]
+          }
+        />
         <:actions>
           <.button phx-disable-with="Saving...">Save Pokemon</.button>
         </:actions>

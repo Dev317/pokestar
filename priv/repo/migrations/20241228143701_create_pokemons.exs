@@ -4,8 +4,8 @@ defmodule Pokestar.Repo.Migrations.CreatePokemons do
   def change do
     create table(:pokemons) do
       add :name, :string
-      add :type_1, :string
-      add :type_2, :string
+      add :type_1, :pokemon_type, null: false
+      add :type_2, :pokemon_type
 
       timestamps(type: :utc_datetime)
     end

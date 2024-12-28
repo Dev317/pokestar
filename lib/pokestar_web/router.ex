@@ -18,6 +18,12 @@ defmodule PokestarWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    live "/pokemons", PokemonLive.Index, :index
+    live "/pokemons/new", PokemonLive.Index, :new
+    live "/pokemons/:id/edit", PokemonLive.Index, :edit
+
+    live "/pokemons/:id", PokemonLive.Show, :show
+    live "/pokemons/:id/show/edit", PokemonLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.

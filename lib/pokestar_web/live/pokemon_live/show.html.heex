@@ -1,0 +1,28 @@
+<.header>
+  Pokemon {@pokemon.id}
+  <:subtitle>This is a pokemon record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/pokemons/#{@pokemon}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit pokemon</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name">{@pokemon.name}</:item>
+  <:item title="Type 1">{@pokemon.type_1}</:item>
+  <:item title="Type 2">{@pokemon.type_2}</:item>
+</.list>
+
+<.back navigate={~p"/pokemons"}>Back to pokemons</.back>
+
+<.modal :if={@live_action == :edit} id="pokemon-modal" show on_cancel={JS.patch(~p"/pokemons/#{@pokemon}")}>
+  <.live_component
+    module={PokestarWeb.PokemonLive.FormComponent}
+    id={@pokemon.id}
+    title={@page_title}
+    action={@live_action}
+    pokemon={@pokemon}
+    patch={~p"/pokemons/#{@pokemon}"}
+  />
+</.modal>

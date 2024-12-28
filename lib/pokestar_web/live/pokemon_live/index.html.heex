@@ -1,0 +1,43 @@
+<.header>
+  Listing Pokemons
+  <:actions>
+    <.link patch={~p"/pokemons/new"}>
+      <.button>New Pokemon</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="pokemons"
+  rows={@streams.pokemons}
+  row_click={fn {_id, pokemon} -> JS.navigate(~p"/pokemons/#{pokemon}") end}
+>
+  <:col :let={{_id, pokemon}} label="Name">{pokemon.name}</:col>
+  <:col :let={{_id, pokemon}} label="Type 1">{pokemon.type_1}</:col>
+  <:col :let={{_id, pokemon}} label="Type 2">{pokemon.type_2}</:col>
+  <:action :let={{_id, pokemon}}>
+    <div class="sr-only">
+      <.link navigate={~p"/pokemons/#{pokemon}"}>Show</.link>
+    </div>
+    <.link patch={~p"/pokemons/#{pokemon}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, pokemon}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: pokemon.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="pokemon-modal" show on_cancel={JS.patch(~p"/pokemons")}>
+  <.live_component
+    module={PokestarWeb.PokemonLive.FormComponent}
+    id={@pokemon.id || :new}
+    title={@page_title}
+    action={@live_action}
+    pokemon={@pokemon}
+    patch={~p"/pokemons"}
+  />
+</.modal>

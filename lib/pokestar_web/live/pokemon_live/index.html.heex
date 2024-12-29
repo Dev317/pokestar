@@ -7,7 +7,17 @@
   </:actions>
 </.header>
 
+<.live_component
+  :if={@page != "loading"}
+  id="live-battle"
+  module={PokestarWeb.PokemonLive.MatchComponent}
+  match={@match}
+  player_1={@player_1}
+  player_2={@player_2}
+/>
+
 <.table
+  :if={@page != "loading"}
   id="pokemons"
   rows={@streams.pokemons}
   row_click={fn {_id, pokemon} -> JS.navigate(~p"/pokemons/#{pokemon}") end}

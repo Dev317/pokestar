@@ -7,6 +7,7 @@ defmodule Pokestar.Battle do
   alias Pokestar.Repo
 
   alias Pokestar.Battle.Pokemon
+  alias Pokestar.Battle.Match
 
   @doc """
   Returns the list of pokemons.
@@ -100,5 +101,39 @@ defmodule Pokestar.Battle do
   """
   def change_pokemon(%Pokemon{} = pokemon, attrs \\ %{}) do
     Pokemon.changeset(pokemon, attrs)
+  end
+
+  def create_match(attrs \\ %{}) do
+    %Match{}
+    |> Match.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def update_match(match, attrs) do
+    match
+    |> Match.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def get_match!(id), do: Repo.get!(Match, id)
+
+  def get_random_pokemon(excluded_id \\ nil) do
+    Pokemon
+    |> Repo.all()
+    |> case do
+      query when excluded_id != nil -> Enum.filter(query, fn pokemon -> pokemon.id != excluded_id end)
+      query -> query
+    end
+    |> Enum.random()
+  end
+
+  def create_live_match() do
+    player_1 = get_random_pokemon()
+    player_2 = get_random_pokemon(player_1.id)
+    {:ok, match} = create_match(%{
+      player_1_id: player_1.id,
+      player_2_id: player_2.id
+    })
+    [player_1, player_2, match]
   end
 end

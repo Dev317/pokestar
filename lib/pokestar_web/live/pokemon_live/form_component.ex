@@ -24,7 +24,7 @@ defmodule PokestarWeb.PokemonLive.FormComponent do
         <.input field={@form[:type_1]}
           type="select"
           label="Type 1"
-          options={Enum.map(PokemonSchema.pokemon_type_enum(), fn type -> {Atom.to_string(type), type} end)} 
+          options={Enum.map(PokemonSchema.pokemon_type_enum(), fn type -> {Atom.to_string(type), type} end)}
         />
         <.input field={@form[:type_2]} 
           type="select"

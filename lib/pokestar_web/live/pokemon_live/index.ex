@@ -6,7 +6,17 @@ defmodule PokestarWeb.PokemonLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :pokemons, Battle.list_pokemons())}
+    case connected?(socket) do
+     true -> [player_1, player_2, match] = Battle.create_live_match()
+      {:ok, socket
+        |> assign(:match, match)
+        |> assign(:player_1, player_1)
+        |> assign(:player_2, player_2)
+        |> assign(:page, "loaded")
+        |> stream(:pokemons, Battle.list_pokemons())
+      }
+      false -> {:ok, assign(socket, page: "loading")}
+    end
   end
 
   @impl true

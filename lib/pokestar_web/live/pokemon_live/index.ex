@@ -7,7 +7,10 @@ defmodule PokestarWeb.PokemonLive.Index do
   @impl true
   def mount(_params, _session, socket) do
     case connected?(socket) do
-     true -> [player_1, player_2, match] = Battle.create_live_match()
+     true ->
+      player_1 = Battle.get_random_pokemon()
+      player_2 = Battle.get_random_pokemon(player_1.id)
+      match = Battle.create_live_match(player_1.id, player_2.id)
       {:ok, socket
         |> assign(:match, match)
         |> assign(:player_1, player_1)
@@ -45,6 +48,16 @@ defmodule PokestarWeb.PokemonLive.Index do
   @impl true
   def handle_info({PokestarWeb.PokemonLive.FormComponent, {:saved, pokemon}}, socket) do
     {:noreply, stream_insert(socket, :pokemons, pokemon)}
+  end
+
+  @impl true
+  def handle_info({PokestarWeb.PokemonLive.MatchComponent, {:updated_match, msg}}, socket) do
+    %{match: match, player_1: player_1, player_2: player_2} = msg
+    updated_socket = socket
+      |> assign(:match, match)
+      |> assign(:player_1, player_1)
+      |> assign(:player_2, player_2)
+    {:noreply, updated_socket}
   end
 
   @impl true

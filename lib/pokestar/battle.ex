@@ -20,6 +20,13 @@ defmodule Pokestar.Battle do
   """
   def list_pokemons do
     Repo.all(Pokemon)
+
+    # pokemons
+    # |>Enum.map(fn pokemon ->
+    #   win_rate = player_win_rate(pokemon.id)
+    #   Map.put(pokemon, :win_rate, win_rate)
+    # end)
+    # |> Enum.sort_by(fn pokemon -> pokemon.win_rate end, :desc)
   end
 
   @doc """
@@ -127,13 +134,37 @@ defmodule Pokestar.Battle do
     |> Enum.random()
   end
 
-  def create_live_match() do
-    player_1 = get_random_pokemon()
-    player_2 = get_random_pokemon(player_1.id)
-    {:ok, match} = create_match(%{
-      player_1_id: player_1.id,
-      player_2_id: player_2.id
-    })
-    [player_1, player_2, match]
+  def create_live_match(player_1_id, player_2_id) do
+    case create_match(%{
+      player_1_id: player_1_id,
+      player_2_id: player_2_id
+    }) do
+      {:ok, match} -> match
+      {:error, _reason} -> nil
+    end
+  end
+
+  def player_win_rate(player_id) do
+    matches_won_query =
+      from(m in Match,
+        where: m.winner_id == ^player_id,
+        select: count(m.id)
+      )
+
+    matches_won = Repo.one(matches_won_query)
+
+    total_matches_query =
+      from(m in Match,
+        where: (m.player_1_id == ^player_id or m.player_2_id == ^player_id) and not is_nil(m.winner_id),
+        select: count(m.id)
+      )
+
+    total_matches = Repo.one(total_matches_query)
+
+    if total_matches > 0 do
+      (matches_won / total_matches) * 100
+    else
+      0.0
+    end
   end
 end
